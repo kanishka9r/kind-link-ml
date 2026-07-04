@@ -37,7 +37,9 @@ def train_model():
     # 4. save
     model_data = {
         "svd_model": matrix_factorization_model,
-        "ngo_ids": user_item_matrix.columns.tolist()
+        "ngo_ids": user_item_matrix.columns.tolist(),
+        "user_ids": user_item_matrix.index.tolist(), # ADDED THIS
+        "matrix": user_item_matrix
     }
     
     # joblib saves the python objects into a physical file on your hard drive

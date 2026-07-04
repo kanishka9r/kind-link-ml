@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from database import db
+from recommender import get_ml_recommendations
 
 app = FastAPI()
 
@@ -9,14 +9,18 @@ def home():
 
 @app.get("/recommend/{user_id}")
 def get_recommendations(user_id: str):
-    is_model_trained = False 
+    recommendations = get_ml_recommendations(user_id)
     
-    if is_model_trained:
-        pass
-    else:
-        print(f"Model not trained yet. Backend will use Rules-Based fallback for User {user_id}.")
+    if len(recommendations) == 0:
         return {
             "user_id": user_id,
             "status": "fallback",
-            "recommendations": [] 
+            "recommendations": []
+        }
+    else:
+        print(f"AI Success! Recommended NGOs for User {user_id}")
+        return {
+            "user_id": user_id,
+            "status": "ai_success",
+            "recommendations": recommendations
         }
