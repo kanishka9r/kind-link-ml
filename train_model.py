@@ -23,7 +23,7 @@ def train_model():
     df['weight'] = df['action'].map(action_weights).fillna(0)
     
      # 2. create the user-item matrix
-    user_item_matrix = df.pivot_table(index='userId', columns='ngoId', values='weight', fill_value=0)
+    user_item_matrix = df.pivot_table(index='userId', columns='ngoId', values='weight', fill_value=0 , aggfunc = 'sum')
     num_components = min(20, len(user_item_matrix.columns) - 1)
     
     if num_components < 1:
