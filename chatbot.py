@@ -3,6 +3,9 @@ import json
 from groq import Groq
 from action import *
 from prompt import *
+from dotenv import load_dotenv
+
+load_dotenv()
 
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
@@ -16,7 +19,7 @@ def get_ai_response(user_message: str, user_id: str, user_name: str):
     
     # Send the chat to Llama 3 passing along our tools 
     response = groq_client.chat.completions.create(
-        model="llama3-70b-8192",
+         model="llama-3.1-8b-instant",
         messages=messages,
         tools=tools,
         tool_choice="auto",
@@ -55,11 +58,13 @@ def get_ai_response(user_message: str, user_id: str, user_name: str):
             
         # Ask Llama 3 to write a final empathetic text reply to the user now that the action is done
         final_response = groq_client.chat.completions.create(
-            model="llama3-70b-8192",
+             model="llama-3.1-8b-instant",
             messages=messages
         )
-        return final_response.choices[0].message.content
+        ai_reply = final_response.choices[0].message.content or ""
+        return ai_reply.split("<function")[0].strip()
         
     else:
         # If no tool was needed, just return its normal text reply
-        return response_message.content
+        ai_reply = response_message.content or ""
+        return ai_reply.split("<function")[0].strip()
