@@ -7,7 +7,7 @@ from database import db
 def train_model():
     
     # 1. fetch data from the 'Interactions' collection
-    interactions_cursor = db.Interactions.find({}, {"_id": 0, "userId": 1, "ngoId": 1, "action": 1})
+    interactions_cursor = db.interactions.find({}, {"_id": 0, "userId": 1, "ngoId": 1, "action": 1})
 
     df = pd.DataFrame(list(interactions_cursor))
     if df.empty:

@@ -19,7 +19,7 @@ def get_ai_response(user_message: str, user_id: str, user_name: str):
     
     # Send the chat to Llama 3 passing along our tools 
     response = groq_client.chat.completions.create(
-         model="llama-3.1-8b-instant",
+         model="llama-3.3-70b-versatile",
         messages=messages,
         tools=tools,
         tool_choice="auto",
@@ -58,7 +58,7 @@ def get_ai_response(user_message: str, user_id: str, user_name: str):
             
         # Ask Llama 3 to write a final empathetic text reply to the user now that the action is done
         final_response = groq_client.chat.completions.create(
-             model="llama-3.1-8b-instant",
+             model="llama-3.3-70b-versatile",
             messages=messages
         )
         ai_reply = final_response.choices[0].message.content or ""

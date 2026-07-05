@@ -15,7 +15,7 @@ def search_ngos(location: str = "", category: str = ""):
         query["category"] = {"$regex": category, "$options": "i"}
         
     # Find up to 3 matches and pull their data for the AI to read
-    results = list(db.Ngos.find(query, {"_id": 1, "name": 1, "description": 1, "city": 1}).limit(3))
+    results = list(db.ngos.find(query, {"_id": 1, "name": 1, "description": 1, "city": 1}).limit(3))
     
     if not results:
         return "No NGOs found matching those criteria."
@@ -28,7 +28,7 @@ def search_ngos(location: str = "", category: str = ""):
 
  #Action 2: Saves an NGO to the user's favorites collection.
 def save_to_favorites(user_id: str, user_name: str, ngo_id: str, ngo_name: str):
-    db.Favorites.insert_one({
+    db.favorites.insert_one({
         "userId": user_id, "userName": user_name, 
         "ngoId": ngo_id, "ngoName": ngo_name, 
         "date": datetime.now()
@@ -37,7 +37,7 @@ def save_to_favorites(user_id: str, user_name: str, ngo_id: str, ngo_name: str):
 
 #Action 3: Books a volunteer visit.
 def book_visit(user_id: str, user_name: str, ngo_id: str, ngo_name: str, date : str):
-    db.Visits.insert_one({
+    db.visits.insert_one({
         "userId": user_id, "userName": user_name, 
         "ngoId": ngo_id, "ngoName": ngo_name, 
         "date": date, "status": "Pending"
@@ -46,7 +46,7 @@ def book_visit(user_id: str, user_name: str, ngo_id: str, ngo_name: str, date : 
 
 #Action 4: Logs a physical donation pledge (clothes, food).
 def log_donation_pledge(user_id: str, user_name: str, ngo_id: str, ngo_name: str, items: str):
-    db.Pledges.insert_one({
+    db.pledges.insert_one({
         "userId": user_id, "userName": user_name, 
         "ngoId": ngo_id, "ngoName": ngo_name, 
         "itemsDescription": items
@@ -55,7 +55,7 @@ def log_donation_pledge(user_id: str, user_name: str, ngo_id: str, ngo_name: str
 
 #Action 5: Logs a request for the NGO to call the user back.
 def request_callback(user_id: str, user_name: str, ngo_id: str, ngo_name: str, phone_number: str):
-    db.Callbacks.insert_one({
+    db.callbacks.insert_one({
         "userId": user_id, "userName": user_name, 
         "ngoId": ngo_id, "ngoName": ngo_name, 
         "phoneNumber": phone_number
