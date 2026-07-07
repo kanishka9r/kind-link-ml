@@ -11,15 +11,18 @@ groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 #Takes the user's chat, decides if a tool is needed, and returns the AI reply.
     
-def get_ai_response(user_message: str, user_id: str, user_name: str):
-    messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_message}
-    ]
+def get_ai_response(user_message: str, user_id: str, user_name: str, chat_history: list = None):
+    if chat_history is None:
+        chat_history = []
+        
+    # Keep only the last 6 messages to save tokens
+    recent_history = chat_history[-6:]
+    
+    messages = [{"role": "system", "content": system_prompt}] + recent_history + [{"role": "user", "content": user_message}]
     
     # Send the chat to Llama 3 passing along our tools 
     response = groq_client.chat.completions.create(
-         model="llama-3.3-70b-versatile",
+        model="llama-3.3-70b-versatile",
         messages=messages,
         tools=tools,
         tool_choice="auto",
