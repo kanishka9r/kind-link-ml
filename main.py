@@ -6,8 +6,11 @@ import os
 from pydantic import BaseModel
 from fastapi import UploadFile, File
 import shutil
+import json
+from typing import List, Dict, Any
 from chatbot import get_ai_response
 from audio import transcribe_audio
+from retention import run_retention_analysis
 
 
 app = FastAPI()
@@ -19,6 +22,7 @@ def start_scheduler():
         scheduler = BackgroundScheduler()
         # Schedule the math to run every single night at 2:00 AM!
         scheduler.add_job(train_model, 'cron', hour=2, minute=0)
+        scheduler.add_job(run_retention_analysis, 'cron', day_of_week='sun', hour=3, minute=0)
         scheduler.start()
 
 @app.get("/")
@@ -46,17 +50,17 @@ def get_recommendations(user_id: str):
 # chatbot
 
 # We need a Pydantic model so FastAPI knows how to read the JSON request
-# We added Default Values here! If Frontend forgets to send them, we just use "Guest"
 class ChatRequest(BaseModel):
     user_id: str = "guest_123"
     user_name: str = "Guest"
     message: str
+    chat_history: List[Dict[str, Any]] = []
 
 @app.post("/chat/text")
 def chat_with_bot(request: ChatRequest):
     try:
         print(f" Received text chat from {request.user_name}: {request.message}")
-        ai_reply = get_ai_response(request.message, request.user_id, request.user_name)
+        ai_reply = get_ai_response(request.message, request.user_id, request.user_name, request.chat_history)
         return {"status": "success", "reply": ai_reply}
         
     except Exception as e:
@@ -66,7 +70,7 @@ def chat_with_bot(request: ChatRequest):
         }
 
 @app.post("/chat/voice")
-async def chat_with_voice(user_id: str = "guest_123", user_name: str = "Guest", audio_file: UploadFile = File(...)):
+async def chat_with_voice(user_id: str = "guest_123", user_name: str = "Guest", chat_history_str: str = "[]", audio_file: UploadFile = File(...)):
     try:
         print(f" Received voice note from {user_name}")
         
@@ -77,7 +81,8 @@ async def chat_with_voice(user_id: str = "guest_123", user_name: str = "Guest", 
         transcribed_text = transcribe_audio(temp_file_path)
         os.remove(temp_file_path)
         
-        ai_reply = get_ai_response(transcribed_text, user_id, user_name)
+        chat_history = json.loads(chat_history_str)
+        ai_reply = get_ai_response(transcribed_text, user_id, user_name, chat_history)
         
         return {
             "status": "success", 
