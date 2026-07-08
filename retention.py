@@ -36,8 +36,8 @@ def run_retention_analysis():
     cluster_means = rfm_df.groupby('Cluster')['Recency'].mean().sort_values()
 
     loyal_cluster = cluster_means.index[0]
-    at_risk_cluster = cluster_means.index[1]
-    churned_cluster = cluster_means.index[2]
+    at_risk_cluster = cluster_means.index[1] if len(cluster_means) > 1 else None
+    churned_cluster = cluster_means.index[2] if len(cluster_means) > 2 else None
 
     def assign_label(cluster_id):
         if cluster_id == loyal_cluster:
@@ -66,4 +66,7 @@ def run_retention_analysis():
                 print(f" Node.js failed to send emails: {response.status_code}")
         except Exception as e:
             print(f" Failed to connect to Node.js backend: {e}")
-    
+
+
+if __name__ == "__main__":
+       run_retention_analysis()
