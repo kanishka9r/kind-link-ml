@@ -100,6 +100,11 @@ async def chat_with_voice(user_id: str = "guest_123", user_name: str = "Guest", 
         }
     except Exception as e:
         print(f" CRITICAL ERROR in /chat/voice: {e}")
+        
+        # Ensure temp file is deleted even if it fails
+        if 'temp_file_path' in locals() and os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
+            
         return {
             "status": "error", 
             "reply": "I am so sorry, I couldn't process your voice note right now. Please try typing your message!"

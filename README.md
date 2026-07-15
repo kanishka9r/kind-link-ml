@@ -27,7 +27,6 @@ This repository powers the "brain" behind the **Kind-Link** platform. It acts as
    ```env
    MONGO_URI="your_mongodb_atlas_connection_string"
    GROQ_API_KEY="your_groq_api_key"           # Required for the conversational chatbot
-   OPENAI_API_KEY="your_openai_api_key"       # Required for voice-to-text transcription
    ENABLE_AUTO_TRAINING=true 
    ```
 
