@@ -21,8 +21,12 @@ app.add_middleware(
     allow_origins=["*"], # In production, replace "*" with your Vercel and Render URLs
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
 )
+
+# Health check endpoint for Uptime Bots to keep Render awake
+@app.get("/")
+def health_check():
+    return {"status": "ML Engine is awake and running!"}
 
 @app.on_event("startup")
 def start_scheduler():
