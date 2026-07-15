@@ -21,13 +21,17 @@ def get_ai_response(user_message: str, user_id: str, user_name: str, chat_histor
     messages = [{"role": "system", "content": system_prompt}] + recent_history + [{"role": "user", "content": user_message}]
     
     # Send the chat to Llama 3 passing along our tools 
-    response = groq_client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=messages,
-        tools=tools,
-        tool_choice="auto",
-        max_tokens=1000
-    )
+    try:
+        response = groq_client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=messages,
+            tools=tools,
+            tool_choice="auto",
+            max_tokens=1000
+        )
+    except Exception as e:
+        print(f"Groq API Error: {e}")
+        return "I am so sorry, I got a little confused! Can you please rephrase what you want to do?"
     
     response_message = response.choices[0].message
     
