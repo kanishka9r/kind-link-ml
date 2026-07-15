@@ -4,3 +4,6 @@ pandas
 pymongo 
 scikit-learn
 apscheduler
+python-dotenv
+groq
+python-multipart
