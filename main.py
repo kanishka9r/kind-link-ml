@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from recommender import get_ml_recommendations
 from apscheduler.schedulers.background import BackgroundScheduler
 from train_model import train_model
@@ -12,8 +13,16 @@ from chatbot import get_ai_response
 from audio import transcribe_audio
 from retention import run_retention_analysis
 
-
 app = FastAPI()
+
+# Add CORS middleware to allow connections from frontend/backend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # In production, replace "*" with your Vercel and Render URLs
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 def start_scheduler():
