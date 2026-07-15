@@ -22,12 +22,13 @@ This repository powers the "brain" behind the **Kind-Link** platform. It acts as
    pip install -r requirements.txt
    ```
 
-2. **Environment Variables**
-   Create a `.env` file in the root directory:
+2. **Environment Configuration**
+   Create a `.env` file in the root directory and configure the following required credentials:
    ```env
    MONGO_URI="your_mongodb_atlas_connection_string"
-   GROQ_API_KEY="your_groq_api_key"
-   ENABLE_AUTO_TRAINING=true
+   GROQ_API_KEY="your_groq_api_key"           # Required for the conversational chatbot
+   OPENAI_API_KEY="your_openai_api_key"       # Required for voice-to-text transcription
+   ENABLE_AUTO_TRAINING=true 
    ```
 
 3. **Start the Server**
